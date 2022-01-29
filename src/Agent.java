@@ -80,5 +80,17 @@ public class Agent {
         //at the end call moveForward() maybe?
     }
 
+    public Coord getCurrLoc() {
+        return currLoc;
+    }
+
+    public Direction getCurrDir() {
+        return currDir;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
     //Extra Credit: demolish
 }
