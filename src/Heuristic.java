@@ -16,12 +16,31 @@ public class Heuristic {
 
     /**
      * Calculates the heuristic value of a node
-     * @return
+     * @param ax x-coordinate of agent
+     * @param ay y-coordinate of agent
+     * @param gx x-coordinate of goal
+     * @param gy y-coordinate of goal
+     * @return calculated heuristic value at the current node
      */
-    public int calculateHeuristic(){
+    public int calculateHeuristic(int ax, int ay, int gx, int gy){
+        int vertical = Math.abs(ay-gy); //Vertical distance between agent and goal
+        int horizontal = Math.abs(ax-gx); //Horizontal distance between agent and goal
+        int straightLine = (int) (Math.sqrt(Math.pow(vertical,2)+Math.pow(horizontal, 2))); //Straight line distance rounded down to make sure it is admissible
+
+        /* Switch case is for different ways of calculating the heuristic*/
         switch(hType){
-            case 1:
+            case 1: //Heuristic is 0 (uninformed search)
                 return 0;
+            case 2: //Heuristic is whichever coordinate distance is smaller
+                return Math.min(horizontal, vertical);
+            case 3: //Heuristic is whichever coordinate distance is larger
+                return Math.max(horizontal, vertical);
+            case 4: //Heuristic is the sum of the two coordinate distances
+                return vertical + horizontal;
+            case 5: //Returns rounded down straight line distance
+                return straightLine;
+            case 6: //Returns rounded down straight line distance * 3
+                return 3* straightLine;
             default:
                 return 0;
         }
