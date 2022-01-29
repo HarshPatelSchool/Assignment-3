@@ -1,22 +1,16 @@
 package src;
 
-enum Direction{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-}
-enum Turn{
-    CLOCKWISE,
-    COUNTERCLOCKWISE
-}
 public class Agent {
     Board board;
     private Coord currLoc;
     private Direction currDir;
     private int score;
 
-    public Agent() {
+    public Agent(Board b, int x, int y, Direction startDir) {
+        board = b;
+        currLoc = new Coord(x, y);
+        currDir = startDir;
+        score = 0;
     }
 
     public void moveForward() {
@@ -44,11 +38,42 @@ public class Agent {
                 break;
         }
     }
-    //turn
+    //turn --> this could probably be optimized, just didn't want to do it right now
     public void turn(Turn t) {
          int currLocVal = board.getVal(currLoc);
-        //check turning direction
-        //change currDir based on turning direction
+         if(t == Turn.CLOCKWISE) {
+            switch(currDir) {
+                case UP:
+                    currDir = Direction.RIGHT;
+                    break;
+                case DOWN:
+                    currDir = Direction.LEFT;
+                    break;
+                case LEFT:
+                    currDir = Direction.UP;
+                    break;
+                case RIGHT:
+                    currDir = Direction.DOWN;
+                    break;
+            }
+         }
+         else { //counterclockwise
+             switch(currDir) {
+                 case UP:
+                     currDir = Direction.LEFT;
+                     break;
+                 case DOWN:
+                     currDir = Direction.RIGHT;
+                     break;
+                 case LEFT:
+                     currDir = Direction.DOWN;
+                     break;
+                 case RIGHT:
+                     currDir = Direction.UP;
+                     break;
+             }
+         }
+         score += Math.round(currLocVal / 2); //this is probably wrong rounding, will fix later
     }
     //bash
     public void bash() {
