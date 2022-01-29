@@ -6,11 +6,11 @@ public class Agent {
     private Direction currDir;
     private int score;
 
-    public Agent(Board b, int x, int y, Direction startDir) {
+    public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
-        currDir = startDir;
-        score = 0;
+        currDir = Direction.UP;
+        score = 1;
     }
 
     public void moveForward() {

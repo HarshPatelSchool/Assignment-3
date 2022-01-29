@@ -6,8 +6,8 @@ public class AStar {
     private Board b;
     private Agent[][] scores;
     private int rows, columns;
-    public AStar(Board b, Heuristic h){
 
+    public AStar(Board b, Heuristic h){
         char[][] board = b.getBoard();
         rows = board.length;
         columns = board[0].length;
@@ -25,6 +25,6 @@ public class AStar {
     }
 
     private void run(){
-        scores[G.getY()][G.getX()] = new Agent(b, G.getX(), G.getY(), Direction.UP);
+        scores[G.getY()][G.getX()] = new Agent(b, G.getX(), G.getY());
     }
 }
