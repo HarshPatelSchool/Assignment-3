@@ -26,4 +26,10 @@ public class Board {
     private char[][] makeBoard() throws IOException {
         return null; //TODO
     }
+
+    public int getVal(Coord c) {
+        //TODO
+        return -1;
+    }
+
 }
