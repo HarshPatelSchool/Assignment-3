@@ -48,8 +48,24 @@ public class Board {
     public int getVal(Coord c) {
         char val = board[c.getY()][c.getX()]; //Gets val at coordinate. Array is in form row, column.
         if(val == 'G' || val == 'S')
-            return 0; //TODO might need to further look at this depending on the AStar algorithm implementation
+            return 1; //Given in the problem these states have a terrain complexity of 1
         else
             return Integer.parseInt(String.valueOf(val)); //Returns the int value at the coordinate
+    }
+
+    /**
+     * Returns the board
+     * @return char[][] that contains the terrain complexity of the board
+     */
+    public char[][] getBoard() {
+        return board;
+    }
+
+    /**
+     * Returns the file of the board
+     * @return the .txt file
+     */
+    public File getFile() {
+        return file;
     }
 }
