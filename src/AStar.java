@@ -11,7 +11,7 @@ public class AStar {
         char[][] board = b.getBoard();
         rows = board.length;
         columns = board[0].length;
-        scores = new Agent[][];
+        scores = new Agent[rows][columns];
         this.b = b;
         for(int y = 0; y < rows; y++){
             for(int x = 0; x < columns; x++) {
