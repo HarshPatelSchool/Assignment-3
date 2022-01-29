@@ -37,9 +37,9 @@ public class Heuristic {
                 return Math.max(horizontal, vertical);
             case 4: //Heuristic is the sum of the two coordinate distances
                 return vertical + horizontal;
-            case 5:
+            case 5: //Returns rounded down straight line distance
                 return straightLine;
-            case 6:
+            case 6: //Returns rounded down straight line distance * 3
                 return 3* straightLine;
             default:
                 return 0;
