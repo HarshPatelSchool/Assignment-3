@@ -7,7 +7,6 @@ public class AStar {
     private Agent[][] scores;
     private int rows, columns;
     public AStar(Board b, Heuristic h){
-
         char[][] board = b.getBoard();
         rows = board.length;
         columns = board[0].length;
@@ -21,10 +20,14 @@ public class AStar {
                     S = new Coord(x, y);
             }
         }
-        run();
+        scores[G.getY()][G.getX()] = new Agent(b, G.getX(), G.getY(), Direction.UP);
+        run(G.getX(), G.getY());
     }
 
-    private void run(){
-        scores[G.getY()][G.getX()] = new Agent(b, G.getX(), G.getY(), Direction.UP);
+    private void run(int x, int y){
+        int[] directionScores = {0,0,0,0};
+        if(G.getX() + 1 < columns && G.getY() < rows);
+
+
     }
 }
