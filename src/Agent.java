@@ -6,11 +6,11 @@ public class Agent {
     private Direction currDir;
     private int score;
 
-    public Agent(Board b, int x, int y, Direction startDir) {
+    public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
-        currDir = startDir;
-        score = 0;
+        currDir = Direction.UP;
+        score = 1;
     }
 
     public void moveForward() {
@@ -19,22 +19,22 @@ public class Agent {
             case UP: // x stays the same
                 y = currLoc.getY() - 1;
                 currLoc.setY(y);
-                score = score + board.getVal(currLoc);
+                score += board.getVal(currLoc);
                 break;
             case DOWN: // x stays the same
                 y = currLoc.getY() + 1;
                 currLoc.setY(y);
-                score = score + board.getVal(currLoc);
+                score += board.getVal(currLoc);
                 break;
             case LEFT: // y stays the same
                 x = currLoc.getX() - 1;
                 currLoc.setX(x);
-                score = score + board.getVal(currLoc);
+                score += board.getVal(currLoc);
                 break;
             case RIGHT: // y stays the same
                 x = currLoc.getX() + 1;
                 currLoc.setX(x);
-                score = score + board.getVal(currLoc);
+                score += board.getVal(currLoc);
                 break;
         }
     }
@@ -77,7 +77,27 @@ public class Agent {
     }
     //bash
     public void bash() {
-        //at the end call moveForward() maybe?
+        int x, y;
+        switch(currDir) {
+            case UP: // x stays the same
+                y = currLoc.getY() - 1;
+                currLoc.setY(y);
+                break;
+            case DOWN: // x stays the same
+                y = currLoc.getY() + 1;
+                currLoc.setY(y);
+                break;
+            case LEFT: // y stays the same
+                x = currLoc.getX() - 1;
+                currLoc.setX(x);
+                break;
+            case RIGHT: // y stays the same
+                x = currLoc.getX() + 1;
+                currLoc.setX(x);
+                break;
+        }
+        score += 3;
+        moveForward();
     }
 
     public Coord getCurrLoc() {
