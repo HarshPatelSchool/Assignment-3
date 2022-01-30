@@ -23,6 +23,10 @@ public class Agent implements Comparable<Agent> {
         heuristic = 0;
     }
 
+    /**
+     * Creates a cloned agent with a different memory value.
+     * @return an Agent with the exact same properties as the current Agent
+     */
     public Agent clone(){
         return new Agent(board, currLoc.getX(), currLoc.getY(), score);
     }
@@ -125,8 +129,8 @@ public class Agent implements Comparable<Agent> {
     }
 
     /**
-     *
-     * @return
+     * Checks if the agent is still in the board or not
+     * @return True if off the board, false if not
      */
     public boolean outOfBounds(){
         if(currLoc.getX()>=board.getBoard()[0].length || currLoc.getY()>=board.getBoard().length || currLoc.getX() <0 || currLoc.getY() <0)
@@ -135,6 +139,11 @@ public class Agent implements Comparable<Agent> {
             return false;
     }
 
+    /**
+     * Compares the heuristic values of two agents
+     * @param o second agent to compare to.
+     * @return
+     */
     @Override
     public int compareTo(Agent o) {
         return o.heuristic-heuristic;
