@@ -14,13 +14,16 @@ public class Agent implements Comparable<Agent> {
         heuristic = 0;
     }
 
-
     public Agent(Board b, int x, int y, int score) {
         board = b;
         currLoc = new Coord(x, y);
         currDir = Direction.UP;
         this.score = score;
         heuristic = 0;
+    }
+
+    public void setScore(int s) {
+        score = s;
     }
 
     /**
@@ -89,7 +92,7 @@ public class Agent implements Comparable<Agent> {
                     break;
             }
         }
-        score -= Math.round(currLocVal / 2.0); //this is probably wrong rounding, will fix later
+        score -= (int)Math.ceil(currLocVal / 2.0); //this is probably wrong rounding, will fix later
     }
     //bash
     public void bash() {
