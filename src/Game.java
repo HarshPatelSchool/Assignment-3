@@ -12,6 +12,9 @@ public class Game {
     public static void main(String [] args) throws IOException {
         File boardTxt = new File(args[0]);
         int heuristicChoice = Integer.parseInt(args[1]);
-        Board board = new Board(boardTxt);
+
+        Heuristic heuristic = new Heuristic(heuristicChoice);
+        Board board = new Board(boardTxt, heuristic);
+        AStar search = new AStar(board);
     }
 }

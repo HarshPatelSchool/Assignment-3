@@ -1,47 +1,59 @@
 package src;
 
-public class Agent {
+public class Agent implements Comparable<Agent> {
     Board board;
     private Coord currLoc;
     private Direction currDir;
     private int score;
-
+    public int heuristic;
     public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
         currDir = Direction.UP;
-        score = 1;
+        score = 0;
+        heuristic = 0;
+    }
+
+
+    public Agent(Board b, int x, int y, int score) {
+        board = b;
+        currLoc = new Coord(x, y);
+        currDir = Direction.UP;
+        this.score = score;
+        heuristic = 0;
+    }
+
+    public Agent clone(){
+        return new Agent(board, currLoc.getX(), currLoc.getY(), score);
     }
 
     public void moveForward() {
-        int x, y;
+        int x = currLoc.getX(), y = currLoc.getY();
         switch(currDir) {
             case UP: // x stays the same
                 y = currLoc.getY() - 1;
-                currLoc.setY(y);
-                score += board.getVal(currLoc);
                 break;
             case DOWN: // x stays the same
                 y = currLoc.getY() + 1;
-                currLoc.setY(y);
-                score += board.getVal(currLoc);
                 break;
             case LEFT: // y stays the same
                 x = currLoc.getX() - 1;
-                currLoc.setX(x);
-                score += board.getVal(currLoc);
                 break;
             case RIGHT: // y stays the same
                 x = currLoc.getX() + 1;
-                currLoc.setX(x);
-                score += board.getVal(currLoc);
                 break;
         }
+        currLoc.setX(x);
+        currLoc.setY(y);
+        if(outOfBounds() == false)
+            score -= board.getVal(currLoc);
+        else
+            score = Integer.MAX_VALUE;
     }
     //turn --> this could probably be optimized, just didn't want to do it right now
     public void turn(Turn t) {
-         int currLocVal = board.getVal(currLoc);
-         if(t == Turn.CLOCKWISE) {
+        int currLocVal = board.getVal(currLoc);
+        if(t == Turn.CLOCKWISE) {
             switch(currDir) {
                 case UP:
                     currDir = Direction.RIGHT;
@@ -56,24 +68,24 @@ public class Agent {
                     currDir = Direction.DOWN;
                     break;
             }
-         }
-         else { //counterclockwise
-             switch(currDir) {
-                 case UP:
-                     currDir = Direction.LEFT;
-                     break;
-                 case DOWN:
-                     currDir = Direction.RIGHT;
-                     break;
-                 case LEFT:
-                     currDir = Direction.DOWN;
-                     break;
-                 case RIGHT:
-                     currDir = Direction.UP;
-                     break;
-             }
-         }
-         score += Math.round(currLocVal / 2); //this is probably wrong rounding, will fix later
+        }
+        else { //counterclockwise
+            switch(currDir) {
+                case UP:
+                    currDir = Direction.LEFT;
+                    break;
+                case DOWN:
+                    currDir = Direction.RIGHT;
+                    break;
+                case LEFT:
+                    currDir = Direction.DOWN;
+                    break;
+                case RIGHT:
+                    currDir = Direction.UP;
+                    break;
+            }
+        }
+        score -= Math.round(currLocVal / 2.0); //this is probably wrong rounding, will fix later
     }
     //bash
     public void bash() {
@@ -96,7 +108,7 @@ public class Agent {
                 currLoc.setX(x);
                 break;
         }
-        score += 3;
+        score -= 3;
         moveForward();
     }
 
@@ -111,6 +123,23 @@ public class Agent {
     public int getScore() {
         return score;
     }
+
+    /**
+     *
+     * @return
+     */
+    public boolean outOfBounds(){
+        if(currLoc.getX()>=board.getBoard()[0].length || currLoc.getY()>=board.getBoard().length || currLoc.getX() <0 || currLoc.getY() <0)
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public int compareTo(Agent o) {
+        return o.heuristic-heuristic;
+    }
+
 
     //Extra Credit: demolish
 }

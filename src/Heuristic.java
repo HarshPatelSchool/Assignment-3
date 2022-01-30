@@ -22,7 +22,8 @@ public class Heuristic {
      * @param gy y-coordinate of goal
      * @return calculated heuristic value at the current node
      */
-    public int calculateHeuristic(int ax, int ay, int gx, int gy){
+    public int calculateHeuristic(Coord a, Coord g){
+        int ay = a.getY(), ax = a.getX(), gy=g.getY(), gx=g.getX();
         int vertical = Math.abs(ay-gy); //Vertical distance between agent and goal
         int horizontal = Math.abs(ax-gx); //Horizontal distance between agent and goal
         int straightLine = (int) (Math.sqrt(Math.pow(vertical,2)+Math.pow(horizontal, 2))); //Straight line distance rounded down to make sure it is admissible
