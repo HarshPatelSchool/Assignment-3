@@ -6,7 +6,6 @@ public enum Direction {
         DOWN(2),
         LEFT(3) ;
 
-
         public final int label;
         Direction(int i) {
                 this.label = i;
