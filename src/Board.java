@@ -8,15 +8,13 @@ import java.util.List;
 public class Board {
     private File file; //Text file that contains the board
     private char[][] board; //Array containing the terrain complexity
-    private Heuristic heuristic;
     /**
      * Creates a new Board object from a text file
      * @param file Source file of the board
      * @throws IOException
      */
-    public Board(File file, Heuristic h) throws IOException {
+    public Board(File file) throws IOException {
         this.file = file;
-        this.heuristic = h;
         board = makeBoard();
     }
 
@@ -70,7 +68,4 @@ public class Board {
         return file;
     }
 
-    public Heuristic getHeuristic() {
-        return heuristic;
-    }
 }
