@@ -6,6 +6,7 @@ public class Agent implements Comparable<Agent> {
     private Direction currDir;
     private int score, turnScore;
     public int heuristic;
+
     public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
