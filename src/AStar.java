@@ -25,7 +25,7 @@ public class AStar {
             }
         }
 
-        run(new Agent(b, S.getX(), S.getY())); //Starts the search with a new agent placed on the start
+        run(new Agent(b, S.getX(), S.getY()), false); //Starts the search with a new agent placed on the start
         this.bestGoal = scores[G.getY()][G.getX()]; //Sets the bestGoal agent as the agent at the Goal coordinate after the algorithm is complete
 
     }
@@ -34,7 +34,7 @@ public class AStar {
      * Recursive check that determines whether to continue or if a base case has been reached
      * @param a Agent to check
      */
-    private void run(Agent a) {
+    private void run(Agent a, boolean demolish) {
         int y = a.getCurrLoc().getY(); //Gets current Y value to check
         int x = a.getCurrLoc().getX(); //Gets current X value to check
         Agent current = scores[y][x]; //Gets the Agent currently at that spot
@@ -45,9 +45,9 @@ public class AStar {
             else if(current.getScore()<a.getScore()+100) //Replace old agent if it has a lower score than the new one would have
                 scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100,  a.getPath(), a.getNodes()); //+100 to score for reaching Goal
         }else if(current==null) //Run update if position is null (hasn't been reached yet)
-            nextStep(x,y,a);
-        else if(current.getScore()<a.getScore()) //Checks if new Agent is better than old and runs update if it is
-            nextStep(x, y, a);
+            nextStep(x,y,a, demolish);
+        else if(current.getScore()<a.getScore() || demolish == true) //Checks if new Agent is better than old and runs update if it is
+            nextStep(x, y, a, demolish);
 
     }
 
@@ -57,10 +57,10 @@ public class AStar {
      * @param y y-coordinate
      * @param a the new Agent for the coordinate
      */
-    private void nextStep(int x, int y, Agent a){
-        scores[y][x] = a.clone(); //New agent is assigned to current coordinates
+    private void nextStep(int x, int y, Agent a, boolean demolish){
+        if(demolish == false) scores[y][x] = a.clone(); //New agent is assigned to current coordinates
         PriorityQueue<Agent> directions = new PriorityQueue<>(); //PQ of the actions the Agent can make, sorted by heuristic
-
+        boolean demolishB = false;
         /* These generate the possible actions the agent can make from the current coordinate */
         /* Bash action */
         Agent bash = a.clone();
@@ -108,11 +108,19 @@ public class AStar {
         backwardsBash.turn(Turn.COUNTERCLOCKWISE);
         backwardsBash.turn(Turn.COUNTERCLOCKWISE);
         backwardsBash.bash();
-        valid(backwardsBash, directions); //Makes sure action is a valid move and adds it to the pq if it is
+        valid(backwardsBash, directions); //Makes sure action is a valid move and adds it to the pq if it is\
+
+        /* Demolish action*/
+        if(demolish == false) {
+            Agent demolishA = a.clone();
+            demolishA.demolish();
+            valid(demolishA, directions); //Makes sure action is a valid move and adds it to the pq if it is
+            demolishB = true;
+        }
 
         while(directions.size()>0) { //Goes down the PQ one action at a time
             Agent next = directions.remove();  //Gets the top action of the PQ and continues the recursion with it
-            run(next); //Runs the Agent at the new coordinate
+            run(next, demolishB); //Runs the Agent at the new coordinate
         }
     }
 
