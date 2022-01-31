@@ -19,10 +19,10 @@ public class Agent implements Comparable<Agent> {
         path = new ArrayList<>();
     }
 
-    public Agent(Board b, int x, int y, int score, ArrayList<String> path) {
+    public Agent(Board b, int x, int y, Direction dir, int score, ArrayList<String> path) {
         board = b;
         currLoc = new Coord(x, y);
-        currDir = Direction.UP;
+        currDir =dir;
         this.score = score;
         heuristic = 0;
         this.path=(ArrayList<String>) path.clone();
@@ -33,7 +33,7 @@ public class Agent implements Comparable<Agent> {
      * @return an Agent with the exact same properties as the current Agent
      */
     public Agent clone(){
-        return new Agent(board, currLoc.getX(), currLoc.getY(), score, path);
+        return new Agent(board, currLoc.getX(), currLoc.getY(), currDir, score, path);
     }
 
     public void moveForward() {

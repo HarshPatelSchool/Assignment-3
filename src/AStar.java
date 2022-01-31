@@ -26,7 +26,8 @@ public class AStar {
         }
 
         run(new Agent(b, S.getX(), S.getY())); //Starts the search with a new agent placed on the start
-        System.out.println(scores[G.getY()][G.getX()].getPath()); //todo
+        System.out.println(scores[G.getY()][G.getX()]);
+        System.out.println(scores[G.getY()][G.getX()].getPath());
 
     }
 
@@ -39,14 +40,15 @@ public class AStar {
         int x = a.getCurrLoc().getX(); //Gets current X value to check
         Agent current = scores[y][x]; //Gets the Agent currently at that spot
 
-        if(current==null) //If no Agent already there run the update
+        if(x==G.getX() && y==G.getY()){
+            if(current==null)
+                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100,  a.getPath()); //+100 to score for reaching Goal
+            else if(current.getScore()<a.getScore()+100)
+                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100,  a.getPath()); //+100 to score for reaching Goal
+        }else if(current==null)
             nextStep(x,y,a);
-        else if(x==G.getX() && y==G.getY() && current.getScore()<(a.getScore()+100)) { //Checks if Goal has been reached with a better method
-            scores[y][x] = new Agent(a.board, x, y, a.getScore() + 100,  a.getPath()); //+100 to score for reaching Goal
-        }
         else if(current.getScore()<a.getScore()) //Checks if new Agent is better than old and runs update if it is
             nextStep(x, y, a);
-
 
     }
 
@@ -59,7 +61,7 @@ public class AStar {
     private void nextStep(int x, int y, Agent a){
         scores[y][x] = a.clone(); //New agent is assigned to current coordinates
         PriorityQueue<Agent> directions = new PriorityQueue<>(); //PQ of the actions the Agent can make
-
+        directions.clear();
         /* Bash action */
         Agent bash = a.clone();
         bash.bash();
@@ -73,20 +75,21 @@ public class AStar {
         clockwiseForward.turn(Turn.CLOCKWISE);
         clockwiseForward.moveForward();
 
-        /* Counterclockwise forward action*/
-        Agent counterForward = a.clone();
-        counterForward.turn(Turn.COUNTERCLOCKWISE);
-        counterForward.moveForward();
-
-        /*Clockwise forward action*/
+        /*Clockwise bash action*/
         Agent clockwiseBash = a.clone();
         clockwiseBash.turn(Turn.CLOCKWISE);
         clockwiseBash.bash();
 
         /* Counterclockwise forward action*/
+        Agent counterForward = a.clone();
+        counterForward.turn(Turn.COUNTERCLOCKWISE);
+        counterForward.moveForward();
+
+        /* Counterclockwise bash action*/
         Agent counterBash = a.clone();
         counterBash.turn(Turn.COUNTERCLOCKWISE);
         counterBash.bash();
+
 
         if(bash.outOfBounds()==false) { //Adds bash action to PQ if it is a valid action
             bash.setHeuristic(heuristic(bash));
@@ -98,17 +101,17 @@ public class AStar {
             directions.add(forward);
         }
 
-        if(!clockwiseForward.outOfBounds()){ //Adds clockwise forward to PQ if it is a valid action
+        if(clockwiseForward.outOfBounds()==false){ //Adds clockwise forward to PQ if it is a valid action
             clockwiseForward.setHeuristic(heuristic(clockwiseForward));
             directions.add(clockwiseForward);
+        }
+        if(clockwiseBash.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
+            clockwiseBash.setHeuristic(heuristic(clockwiseBash));
+            directions.add(clockwiseBash);
         }
         if(counterForward.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
             counterForward.setHeuristic(heuristic(counterForward));
             directions.add(counterForward);
-        }
-        if(counterBash.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
-            counterBash.setHeuristic(heuristic(counterBash));
-            directions.add(counterBash);
         }
         if(counterBash.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
             counterBash.setHeuristic(heuristic(counterBash));
