@@ -42,7 +42,7 @@ public class AStar {
         if(current==null) //If no Agent already there run the update
             nextStep(x,y,a);
         else if(x==G.getX() && y==G.getY() && current.getScore()<a.getScore()+100) //Checks if Goal has been reached with a better method
-            scores[y][x]=new Agent(a.board, x, y, a.getScore()+100); //+100 to score for reaching Goal
+            scores[y][x]=new Agent(a.board, x, y, a.getFinalScore()+100, a.getTurnScore()); //+100 to score for reaching Goal
         else if(current.getScore()<a.getScore()) //Checks if new Agent is better than old and runs update if it is
             nextStep(x, y, a);
 
@@ -107,7 +107,7 @@ public class AStar {
      * @return Heuristic value
      */
     private int heuristic(Agent a){
-        return a.getScore() - h.calculateHeuristic(a.getCurrLoc(), G);
+        return (a.getScore() + (a.getTurnScore()*2)) - h.calculateHeuristic(a.getCurrLoc(), G);
     }
 
 }

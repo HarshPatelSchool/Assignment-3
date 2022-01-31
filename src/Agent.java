@@ -4,26 +4,24 @@ public class Agent implements Comparable<Agent> {
     Board board;
     private Coord currLoc;
     private Direction currDir;
-    private int score;
+    private int score, turnScore;
     public int heuristic;
     public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
         currDir = Direction.UP;
         score = 0;
+        turnScore = 0;
         heuristic = 0;
     }
 
-    public Agent(Board b, int x, int y, int score) {
+    public Agent(Board b, int x, int y, int score, int turnScore) {
         board = b;
         currLoc = new Coord(x, y);
         currDir = Direction.UP;
         this.score = score;
+        this.turnScore = turnScore;
         heuristic = 0;
-    }
-
-    public void setScore(int s) {
-        score = s;
     }
 
     /**
@@ -31,7 +29,7 @@ public class Agent implements Comparable<Agent> {
      * @return an Agent with the exact same properties as the current Agent
      */
     public Agent clone(){
-        return new Agent(board, currLoc.getX(), currLoc.getY(), score);
+        return new Agent(board, currLoc.getX(), currLoc.getY(), score, turnScore);
     }
 
     public void moveForward() {
@@ -92,7 +90,7 @@ public class Agent implements Comparable<Agent> {
                     break;
             }
         }
-        score -= (int)Math.ceil(currLocVal / 2.0); //this is probably wrong rounding, will fix later
+        turnScore -= (int)Math.ceil(currLocVal / 2.0);
     }
     //bash
     public void bash() {
@@ -129,6 +127,14 @@ public class Agent implements Comparable<Agent> {
 
     public int getScore() {
         return score;
+    }
+
+    public int getTurnScore() {
+        return turnScore;
+    }
+
+    public int getFinalScore() {
+        return score + (turnScore*2);
     }
 
     /**
