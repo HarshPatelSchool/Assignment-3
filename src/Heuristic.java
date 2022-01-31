@@ -16,10 +16,8 @@ public class Heuristic {
 
     /**
      * Calculates the heuristic value of a node
-     * @param ax x-coordinate of agent
-     * @param ay y-coordinate of agent
-     * @param gx x-coordinate of goal
-     * @param gy y-coordinate of goal
+     * @param a coordinates of agent
+     * @param g coordinates of goal
      * @return calculated heuristic value at the current node
      */
     public int calculateHeuristic(Coord a, Coord g){

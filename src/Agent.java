@@ -1,27 +1,30 @@
 package src;
 
+import java.util.ArrayList;
+
 public class Agent implements Comparable<Agent> {
     Board board;
     private Coord currLoc;
     private Direction currDir;
-    private int score, turnScore;
-    public int heuristic;
+    private int score;
+    private int heuristic;
+    private ArrayList<String> path;
     public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
         currDir = Direction.UP;
         score = 0;
-        turnScore = 0;
         heuristic = 0;
+        path = new ArrayList<>();
     }
 
-    public Agent(Board b, int x, int y, int score, int turnScore) {
+    public Agent(Board b, int x, int y, int score, ArrayList<String> path) {
         board = b;
         currLoc = new Coord(x, y);
         currDir = Direction.UP;
         this.score = score;
-        this.turnScore = turnScore;
         heuristic = 0;
+        this.path=(ArrayList<String>) path.clone();
     }
 
     /**
@@ -29,7 +32,7 @@ public class Agent implements Comparable<Agent> {
      * @return an Agent with the exact same properties as the current Agent
      */
     public Agent clone(){
-        return new Agent(board, currLoc.getX(), currLoc.getY(), score, turnScore);
+        return new Agent(board, currLoc.getX(), currLoc.getY(), score, path);
     }
 
     public void moveForward() {
@@ -50,8 +53,10 @@ public class Agent implements Comparable<Agent> {
         }
         currLoc.setX(x);
         currLoc.setY(y);
-        if(outOfBounds() == false)
+        if(outOfBounds() == false) {
             score -= board.getVal(currLoc);
+            path.add("Move Forward");
+        }
         else
             score = Integer.MAX_VALUE;
     }
@@ -73,6 +78,8 @@ public class Agent implements Comparable<Agent> {
                     currDir = Direction.DOWN;
                     break;
             }
+            path.add("Turn Clockwise");
+
         }
         else { //counterclockwise
             switch(currDir) {
@@ -89,8 +96,10 @@ public class Agent implements Comparable<Agent> {
                     currDir = Direction.UP;
                     break;
             }
+            path.add("Turn Counterclockwise");
+
         }
-        turnScore -= (int)Math.ceil(currLocVal / 2.0);
+        score -= (int)Math.ceil(currLocVal / 2.0);
     }
     //bash
     public void bash() {
@@ -114,6 +123,7 @@ public class Agent implements Comparable<Agent> {
                 break;
         }
         score -= 3;
+        path.add("Bash");
         moveForward();
     }
 
@@ -129,12 +139,8 @@ public class Agent implements Comparable<Agent> {
         return score;
     }
 
-    public int getTurnScore() {
-        return turnScore;
-    }
-
-    public int getFinalScore() {
-        return score + (turnScore*2);
+    public ArrayList<String> getPath() {
+        return path;
     }
 
     /**
@@ -155,7 +161,7 @@ public class Agent implements Comparable<Agent> {
      */
     @Override
     public int compareTo(Agent o) {
-        return o.heuristic-heuristic;
+        return o.getHeuristic()-getHeuristic();
     }
 
     @Override
@@ -164,9 +170,16 @@ public class Agent implements Comparable<Agent> {
                 "currLoc=" + currLoc +
                 ", currDir=" + currDir +
                 ", score=" + score +
-                ", turnScore=" + turnScore +
                 '}';
     }
 
+
+    public int getHeuristic() {
+        return heuristic;
+    }
+
+    public void setHeuristic(int heuristic) {
+        this.heuristic = heuristic;
+    }
 //Extra Credit: demolish
 }
