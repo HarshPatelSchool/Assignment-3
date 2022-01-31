@@ -9,6 +9,7 @@ public class Agent implements Comparable<Agent> {
     private int score;
     private int heuristic;
     private ArrayList<String> path;
+
     public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);

@@ -9,7 +9,7 @@ public class AStar {
     private int rows, columns;
 
     public AStar(Board b){
-        this.h = b.h; //Gets the heuristic function
+        this.h = b.getHeuristic(); //Gets the heuristic function
         char[][] board = b.getBoard(); //Gets the board values
         rows = board.length; //Number of rows
         columns = board[0].length; //Number of columns
