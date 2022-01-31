@@ -26,7 +26,7 @@ public class AStar {
         }
 
         run(new Agent(b, S.getX(), S.getY())); //Starts the search with a new agent placed on the start
-        System.out.println(scores[G.getX()][G.getY()]); //todo
+        System.out.println(scores[G.getY()][G.getX()]); //todo
 
     }
 
@@ -41,8 +41,9 @@ public class AStar {
 
         if(current==null) //If no Agent already there run the update
             nextStep(x,y,a);
-        else if(x==G.getX() && y==G.getY() && current.getFinalScore()<a.getFinalScore()+100) //Checks if Goal has been reached with a better method
-            scores[y][x]=new Agent(a.board, x, y, a.getFinalScore()+100, a.getTurnScore()); //+100 to score for reaching Goal
+        else if(x==G.getX() && y==G.getY() && current.getFinalScore()<(a.getFinalScore()+100)) { //Checks if Goal has been reached with a better method
+            scores[y][x] = new Agent(a.board, x, y, a.getFinalScore() + 100, a.getTurnScore()); //+100 to score for reaching Goal
+        }
         else if(current.getFinalScore()<a.getFinalScore()) //Checks if new Agent is better than old and runs update if it is
             nextStep(x, y, a);
 
