@@ -158,6 +158,15 @@ public class Agent implements Comparable<Agent> {
         return o.heuristic-heuristic;
     }
 
+    @Override
+    public String toString() {
+        return "Agent{" +
+                "currLoc=" + currLoc +
+                ", currDir=" + currDir +
+                ", score=" + score +
+                ", turnScore=" + turnScore +
+                '}';
+    }
 
-    //Extra Credit: demolish
+//Extra Credit: demolish
 }
