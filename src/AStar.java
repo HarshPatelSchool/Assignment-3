@@ -26,7 +26,7 @@ public class AStar {
         }
 
         run(new Agent(b, S.getX(), S.getY())); //Starts the search with a new agent placed on the start
-        System.out.println(scores[G.getY()][G.getX()]); //todo
+        System.out.println(scores[G.getY()][G.getX()].getPath()); //todo
 
     }
 
@@ -41,10 +41,10 @@ public class AStar {
 
         if(current==null) //If no Agent already there run the update
             nextStep(x,y,a);
-        else if(x==G.getX() && y==G.getY() && current.getFinalScore()<(a.getFinalScore()+100)) { //Checks if Goal has been reached with a better method
-            scores[y][x] = new Agent(a.board, x, y, a.getFinalScore() + 100, a.getTurnScore()); //+100 to score for reaching Goal
+        else if(x==G.getX() && y==G.getY() && current.getScore()<(a.getScore()+100)) { //Checks if Goal has been reached with a better method
+            scores[y][x] = new Agent(a.board, x, y, a.getScore() + 100,  a.getPath()); //+100 to score for reaching Goal
         }
-        else if(current.getFinalScore()<a.getFinalScore()) //Checks if new Agent is better than old and runs update if it is
+        else if(current.getScore()<a.getScore()) //Checks if new Agent is better than old and runs update if it is
             nextStep(x, y, a);
 
 
@@ -68,34 +68,51 @@ public class AStar {
         Agent forward = a.clone();
         forward.moveForward();
 
-        /*Clockwise turn action*/
-        Agent clockwise = a.clone();
-        clockwise.turn(Turn.CLOCKWISE);
-        clockwise.moveForward();
+        /*Clockwise forward action*/
+        Agent clockwiseForward = a.clone();
+        clockwiseForward.turn(Turn.CLOCKWISE);
+        clockwiseForward.moveForward();
 
-        /* Counterclockwise turn action*/
-        Agent counter = a.clone();
-        counter.turn(Turn.COUNTERCLOCKWISE);
-        counter.moveForward();
+        /* Counterclockwise forward action*/
+        Agent counterForward = a.clone();
+        counterForward.turn(Turn.COUNTERCLOCKWISE);
+        counterForward.moveForward();
+
+        /*Clockwise forward action*/
+        Agent clockwiseBash = a.clone();
+        clockwiseBash.turn(Turn.CLOCKWISE);
+        clockwiseBash.bash();
+
+        /* Counterclockwise forward action*/
+        Agent counterBash = a.clone();
+        counterBash.turn(Turn.COUNTERCLOCKWISE);
+        counterBash.bash();
 
         if(bash.outOfBounds()==false) { //Adds bash action to PQ if it is a valid action
-            bash.heuristic = heuristic(bash);
+            bash.setHeuristic(heuristic(bash));
             directions.add(bash);
         }
 
         if(forward.outOfBounds()==false){ //Adds forward action to PQ if it is a valid action
-            forward.heuristic = heuristic(forward);
+            forward.setHeuristic(heuristic(forward));
             directions.add(forward);
         }
 
-        //TODO turn heuristics need to be looked at
-        if(!clockwise.outOfBounds()){ //Adds clockwise action to PQ if it is a valid action
-            clockwise.heuristic = heuristic(clockwise);
-            directions.add(clockwise);
+        if(!clockwiseForward.outOfBounds()){ //Adds clockwise forward to PQ if it is a valid action
+            clockwiseForward.setHeuristic(heuristic(clockwiseForward));
+            directions.add(clockwiseForward);
         }
-        if(counter.outOfBounds()==false){ //Adds counterclockwise action to PQ if it is a valid action
-            counter.heuristic = heuristic(counter);
-            directions.add(counter);
+        if(counterForward.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
+            counterForward.setHeuristic(heuristic(counterForward));
+            directions.add(counterForward);
+        }
+        if(counterBash.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
+            counterBash.setHeuristic(heuristic(counterBash));
+            directions.add(counterBash);
+        }
+        if(counterBash.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
+            counterBash.setHeuristic(heuristic(counterBash));
+            directions.add(counterBash);
         }
 
         while(directions.size()>0) { //Goes down the PQ one action at a time
@@ -110,7 +127,7 @@ public class AStar {
      * @return Heuristic value
      */
     private int heuristic(Agent a){
-        return (a.getScore() + (a.getTurnScore()*2)) - h.calculateHeuristic(a.getCurrLoc(), G);
+        return a.getScore() - h.calculateHeuristic(a.getCurrLoc(), G);
     }
 
 }
