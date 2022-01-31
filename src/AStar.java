@@ -41,9 +41,9 @@ public class AStar {
 
         if(current==null) //If no Agent already there run the update
             nextStep(x,y,a);
-        else if(x==G.getX() && y==G.getY() && current.getScore()<a.getScore()+100) //Checks if Goal has been reached with a better method
+        else if(x==G.getX() && y==G.getY() && current.getFinalScore()<a.getFinalScore()+100) //Checks if Goal has been reached with a better method
             scores[y][x]=new Agent(a.board, x, y, a.getFinalScore()+100, a.getTurnScore()); //+100 to score for reaching Goal
-        else if(current.getScore()<a.getScore()) //Checks if new Agent is better than old and runs update if it is
+        else if(current.getFinalScore()<a.getFinalScore()) //Checks if new Agent is better than old and runs update if it is
             nextStep(x, y, a);
 
 
@@ -70,10 +70,12 @@ public class AStar {
         /*Clockwise turn action*/
         Agent clockwise = a.clone();
         clockwise.turn(Turn.CLOCKWISE);
+        clockwise.moveForward();
 
         /* Counterclockwise turn action*/
         Agent counter = a.clone();
         counter.turn(Turn.COUNTERCLOCKWISE);
+        counter.moveForward();
 
         if(bash.outOfBounds()==false) { //Adds bash action to PQ if it is a valid action
             bash.heuristic = heuristic(bash);
@@ -86,7 +88,7 @@ public class AStar {
         }
 
         //TODO turn heuristics need to be looked at
-        if(clockwise.outOfBounds()==false){ //Adds clockwise action to PQ if it is a valid action
+        if(!clockwise.outOfBounds()){ //Adds clockwise action to PQ if it is a valid action
             clockwise.heuristic = heuristic(clockwise);
             directions.add(clockwise);
         }
