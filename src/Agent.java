@@ -2,6 +2,9 @@ package src;
 
 import java.util.ArrayList;
 
+/**
+ * Agent stores and defines the movement and coordinates that can be made on the board
+ */
 public class Agent implements Comparable<Agent> {
     Board board;
     private Coord currLoc;
@@ -9,7 +12,14 @@ public class Agent implements Comparable<Agent> {
     private int score;
     private int heuristic;
     private ArrayList<String> path;
+    private int nodes;
 
+    /**
+     * Creates a new agent at a coordinate
+     * @param b Board to be placed onto
+     * @param x x-coordinate
+     * @param y y-coordinate
+     */
     public Agent(Board b, int x, int y) {
         board = b;
         currLoc = new Coord(x, y);
@@ -17,15 +27,27 @@ public class Agent implements Comparable<Agent> {
         score = 0;
         heuristic = 0;
         path = new ArrayList<>();
+        nodes=0;
     }
 
-    public Agent(Board b, int x, int y, Direction dir, int score, ArrayList<String> path) {
+    /**
+     * Creates agent with specified values
+     * @param b Board
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @param dir Direction it is looking
+     * @param score Current score
+     * @param path Path is has traveled
+     * @param nodes Number of nodes visited
+     */
+    public Agent(Board b, int x, int y, Direction dir, int score, ArrayList<String> path, int nodes) {
         board = b;
         currLoc = new Coord(x, y);
         currDir =dir;
         this.score = score;
         heuristic = 0;
         this.path=(ArrayList<String>) path.clone();
+        this.nodes=nodes;
     }
 
     /**
@@ -33,9 +55,12 @@ public class Agent implements Comparable<Agent> {
      * @return an Agent with the exact same properties as the current Agent
      */
     public Agent clone(){
-        return new Agent(board, currLoc.getX(), currLoc.getY(), currDir, score, path);
+        return new Agent(board, currLoc.getX(), currLoc.getY(), currDir, score, path, nodes);
     }
 
+    /**
+     * Causes the Agent to move forward from whatever direction it is looking at
+     */
     public void moveForward() {
         int x = currLoc.getX(), y = currLoc.getY();
         switch(currDir) {
@@ -57,11 +82,16 @@ public class Agent implements Comparable<Agent> {
         if(outOfBounds() == false) {
             score -= board.getVal(currLoc);
             path.add("Move Forward");
+            nodes++;
         }
         else
             score = Integer.MAX_VALUE;
     }
-    //turn --> this could probably be optimized, just didn't want to do it right now
+
+    /**
+     * Turns the Agent 90°
+     * @param t Direction to turn
+     */
     public void turn(Turn t) {
         int currLocVal = board.getVal(currLoc);
         if(t == Turn.CLOCKWISE) {
@@ -102,7 +132,10 @@ public class Agent implements Comparable<Agent> {
         }
         score -= (int)Math.ceil(currLocVal / 2.0);
     }
-    //bash
+
+    /**
+     * Causes the agent to bash through the next node in-front of it, followed up immediately by moving forward
+     */
     public void bash() {
         int x, y;
         switch(currDir) {
@@ -125,13 +158,42 @@ public class Agent implements Comparable<Agent> {
         }
         score -= 3;
         path.add("Bash");
+        nodes++;
         moveForward();
     }
 
+    /**
+     * Demolish the surrounding terrain
+     */
+    public void demolish(){ //TODO
+        int x = currLoc.getX();
+        int y = currLoc.getY();
+
+        for(int i =x-1; i<=x+1; i++){
+          for(int j = y-1;j <=y+1; j++){
+              if(i==x && j ==y) //Does not demolish on current location of agent
+                  continue;
+              else if (i <0 || j <0 || j>=board.getBoard().length || i>=board.getBoard()[0].length)
+                  continue;
+              else board.getBoard()[y][x]=3;
+
+          }
+        }
+        score-=4;
+    }
+
+    /**
+     * Gets coordinates of the Agent
+     * @return current Coord of Agent
+     */
     public Coord getCurrLoc() {
         return currLoc;
     }
 
+    /**
+     *
+     * @return
+     */
     public Direction getCurrDir() {
         return currDir;
     }
@@ -142,6 +204,10 @@ public class Agent implements Comparable<Agent> {
 
     public ArrayList<String> getPath() {
         return path;
+    }
+
+    public int getNodes() {
+        return nodes;
     }
 
     /**
@@ -174,13 +240,20 @@ public class Agent implements Comparable<Agent> {
                 '}';
     }
 
-
+    /**
+     * Gets heuristic of agent
+     * @return Agent's heuristic
+     */
     public int getHeuristic() {
         return heuristic;
     }
 
+    /**
+     * Sets heuristic of agent
+     * @param heuristic Agent's heuristic
+     */
     public void setHeuristic(int heuristic) {
         this.heuristic = heuristic;
     }
-//Extra Credit: demolish
+
 }
