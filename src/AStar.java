@@ -34,7 +34,7 @@ public class AStar {
         }
 
         directions.add(new Agent(b, S.getX(), S.getY()));
-        runSearch(new Agent(b, S.getX(), S.getY()));
+        runSearch();
         this.bestGoal = scores[G.getY()][G.getX()]; //Sets the bestGoal agent as the agent at the Goal coordinate after the algorithm is complete
         //System.out.println(Arrays.deepToString(scores));
         FileWriter check = new FileWriter("src/boards/check.txt"); //Starts the file writer for a new text file
@@ -55,17 +55,17 @@ public class AStar {
 
     /**
      * Runs the search algorithm
-     * @param a Agent to be checked
      */
-    private void runSearch(Agent a){
-        int y = a.getCurrLoc().getY(); //Gets current Y value to check
-        int x = a.getCurrLoc().getX(); //Gets current X value to check
-        ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from it's current position
-        while(!directions.isEmpty()){ //Continues running while there are actions in the priority queue
+    private void runSearch(){
+        while (!directions.isEmpty()){ //Continues running while there are actions in the priority queue
+            Agent a = directions.remove();
+            int y = a.getCurrLoc().getY(); //Gets current Y value to check
+            int x = a.getCurrLoc().getX(); //Gets current X value to check
+            ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from it's current position
             if(a.getCurrLoc().equals(G)) { //Checks if goal has been reached
                 scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes()); //+100 to score for reaching Goal
                 directions.clear(); //Goal has been reached so algorithm can stop by clearing the PQ
-                break; //Breaks recursion
+                break;
             }else{
                 /*These actions represent the places the agent can get to from the current coordinates*/
                 /* Backwards action */
@@ -122,9 +122,9 @@ public class AStar {
                         int newY = neighbor.getCurrLoc().getY();
                         neighbor.setHeuristic(heuristic(neighbor)); //Sets the heuristic of action
                         if(scores[newY][newX]==null){ //If position hasn't been reached yet add it
-                                scores[newY][newX] = neighbor;
-                                visited.add(new Coord(newX, newY));
-                                directions.add(neighbor);
+                            scores[newY][newX] = neighbor;
+                            visited.add(new Coord(newX, newY));
+                            directions.add(neighbor);
 
                         }else if(scores[newY][newX].getScore()<neighbor.getScore()){ //If old method to reach point is worse, replace it
                             scores[newY][newX]=neighbor;
@@ -133,7 +133,6 @@ public class AStar {
                     }
                 }
             }
-            runSearch(directions.remove());
         }
     }
 
