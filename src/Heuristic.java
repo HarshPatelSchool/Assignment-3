@@ -24,8 +24,7 @@ public class Heuristic {
         int ay = a.getY(), ax = a.getX(), gy=g.getY(), gx=g.getX();
         int vertical = Math.abs(ay-gy); //Vertical distance between agent and goal
         int horizontal = Math.abs(ax-gx); //Horizontal distance between agent and goal
-        int straightLine = (int) (Math.sqrt(Math.pow(vertical,2)+Math.pow(horizontal, 2))); //Straight line distance rounded down to make sure it is admissible
-
+        int result;
         /* Switch case is for different ways of calculating the heuristic*/
         switch(hType){
             case 1: //Heuristic is 0 (uninformed search)
@@ -37,9 +36,19 @@ public class Heuristic {
             case 4: //Heuristic is the sum of the two coordinate distances
                 return vertical + horizontal;
             case 5: //Returns rounded down straight line distance
-                return straightLine;
+                result = vertical + horizontal;
+                /* since a turn always costs at least a time of 1 since it rounds up, if the vertical and horizontal
+                distance are both positive, it must have at least one turn, so the heuristic can be the manhattan score + 1,
+                otherwise it is just a straight line from S to G so it is just manhattan distance.
+                 */
+                if(vertical !=0 && horizontal!=0)
+                    result++;
+                return result;
             case 6: //Returns rounded down straight line distance * 3
-                return 3* straightLine;
+                result = vertical + horizontal;
+                if(vertical !=0 && horizontal!=0)
+                    result++;
+                return 3* result;
             default:
                 return 0;
         }
