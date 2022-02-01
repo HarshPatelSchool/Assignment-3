@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class AStar {
-    private Coord G, S;
-    private Agent[][] scores;
-    private Heuristic h;
-    private int rows, columns;
-    private Agent bestGoal;
-    private ArrayList<Coord> visited;
+    private Coord G, S; //Goal and Start coordinates
+    private Agent[][] scores; //Visited list
+    private Heuristic h; //Heuristic method
+    private int rows, columns; //Rows and columns of board
+    private Agent bestGoal; //Agent that reached the goal
+    private ArrayList<Coord> visited; //Coordinates the algorithm checked
     private  PriorityQueue<Agent> directions; //PQ of the actions the Agent can make, sorted by heuristic
 
     /**
-     *
-     * @param b
-     * @param h
+     * Uses A* to give the optimal path in a board from Start to Goal using the given heurisitc
+     * @param b Board
+     * @param h Heuristic method
      * @throws IOException
      */
     public AStar(Board b, Heuristic h) throws IOException {
@@ -62,6 +62,7 @@ public class AStar {
 
     /**
      * Runs the search algorithm
+     * Based off of the pseudocode from https://www.redblobgames.com/pathfinding/a-star/introduction.html#astar
      */
     private void runSearch(){
         while (!directions.isEmpty()){ //Continues running while there are actions in the priority queue
@@ -71,7 +72,6 @@ public class AStar {
             ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from its current position
             if(a.getCurrLoc().equals(G)) { //Checks if goal has been reached
                 scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes()); //+100 to score for reaching Goal
-                directions.clear(); //Goal has been reached so algorithm can stop by clearing the PQ
                 break; //Stops loop
             }else{
                 /*These actions represent the places the agent can get to from the current coordinates*/
