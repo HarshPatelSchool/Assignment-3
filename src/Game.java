@@ -9,7 +9,7 @@ public class Game {
     public static void main(String [] args) throws IOException {
         File boardTxt = new File(args[0]); //Stores the file path from commandline argument
         int heuristicChoice = Integer.parseInt(args[1]); //Stores the heuristic being used (1-6) from the commandline argument
-        GenerateBoards.generateBoards(10,40,45); //Comment this line out to stop generating new random boards
+        GenerateBoards.generateBoards(10,40,40); //Comment this line out to stop generating new random boards
 
         Heuristic heuristic = new Heuristic(heuristicChoice); //Generates the heuristic method based on user choice
         Board board = new Board(boardTxt); //Generates board from user's file

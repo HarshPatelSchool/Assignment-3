@@ -1,5 +1,7 @@
 package src;
 
+import java.util.Objects;
+
 /**
  * Stores cartesian coordinate values
  */
@@ -52,5 +54,18 @@ public class Coord {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coord coord = (Coord) o;
+        return x == coord.x && y == coord.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

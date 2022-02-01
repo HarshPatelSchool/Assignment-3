@@ -228,7 +228,7 @@ public class Agent implements Comparable<Agent> {
      */
     @Override
     public int compareTo(Agent o) {
-        return o.getHeuristic()-getHeuristic();
+        return o.getHeuristic()-getHeuristic(); //The reason why it is reversed is so the Priorty Queue sort goes from highest heuristic to lowest
     }
 
     @Override

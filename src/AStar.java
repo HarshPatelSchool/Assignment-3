@@ -1,5 +1,9 @@
 package src;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class AStar {
@@ -8,13 +12,16 @@ public class AStar {
     private Heuristic h;
     private int rows, columns;
     private Agent bestGoal;
-    public AStar(Board b, Heuristic h){
+    public ArrayList<Coord> visited;
+    private  PriorityQueue<Agent> directions = new PriorityQueue<>(); //PQ of the actions the Agent can make, sorted by heuristic
+
+    public AStar(Board b, Heuristic h) throws IOException {
         this.h = h; //Gets the heuristic function
         char[][] board = b.getBoard(); //Gets the board values
         rows = board.length; //Number of rows
         columns = board[0].length; //Number of columns
         scores = new Agent[rows][columns]; //Board that stores Agents and their paths
-
+        visited = new ArrayList<>();
         /* Searches the value board for Start and Goal coordinates*/
         for(int y = 0; y < rows; y++){
             for(int x = 0; x < columns; x++) {
@@ -25,94 +32,107 @@ public class AStar {
             }
         }
 
-        run(new Agent(b, S.getX(), S.getY())); //Starts the search with a new agent placed on the start
+        directions.add(new Agent(b, S.getX(), S.getY()));
+        runSearch(new Agent(b, S.getX(), S.getY()));
         this.bestGoal = scores[G.getY()][G.getX()]; //Sets the bestGoal agent as the agent at the Goal coordinate after the algorithm is complete
-
+        //System.out.println(Arrays.deepToString(scores));
+        FileWriter check = new FileWriter("src/boards/check.txt"); //Starts the file writer for a new text file
+        for(int y = 0; y < rows; y++){ //Rows
+            for(int x = 0; x<columns; x++){ //Columns
+                if (new Coord(x,y).equals(G))
+                    check.write("G\t");
+                else if (new Coord(x,y).equals(S))
+                    check.write("S\t");
+                else if(visited.contains(new Coord(x,y)))
+                    check.write("X\t");
+                else check.write(".\t");
+            }
+            if(y!=rows) check.write("\n"); //Adds newline at the end of the row except the last row
+        }
+        check.close(); //Closes the file writer after everything has been added to the text file
     }
 
     /**
-     * Recursive check that determines whether to continue or if a base case has been reached
-     * @param a Agent to check
+     * Runs the search algorithm
+     * @param a Agent to be checked
      */
-    private void run(Agent a) {
+    private void runSearch(Agent a){
         int y = a.getCurrLoc().getY(); //Gets current Y value to check
         int x = a.getCurrLoc().getX(); //Gets current X value to check
-        Agent current = scores[y][x]; //Gets the Agent currently at that spot
+        ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from it's current position
+        while(!directions.isEmpty()){ //Continues running while there are actions in the priority queue
+            if(a.getCurrLoc().equals(G)) { //Checks if goal has been reached
+                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes()); //+100 to score for reaching Goal
+                directions.clear(); //Goal has been reached so algorithm can stop by clearing the PQ
+                break; //Breaks recursion
+            }else{
+                /*These actions represent the places the agent can get to from the current coordinates*/
+                /* Backwards action */
+                Agent bash = a.clone();
+                bash.bash();
+                neighbors.add(bash);
 
-        if(x==G.getX() && y==G.getY()){ //Checks if goal is reached
-            if(current==null) //Add agent if goal is null (hasn't been reached yet)
-                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100,  a.getPath(), a.getNodes()); //+100 to score for reaching Goal
-            else if(current.getScore()<a.getScore()+100) //Replace old agent if it has a lower score than the new one would have
-                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100,  a.getPath(), a.getNodes()); //+100 to score for reaching Goal
-        }else if(current==null) //Run update if position is null (hasn't been reached yet)
-            nextStep(x,y,a);
-        else if(current.getScore()<a.getScore()) //Checks if new Agent is better than old and runs update if it is
-            nextStep(x, y, a);
+                /* Forward action */
+                Agent forward = a.clone();
+                forward.moveForward();
+                neighbors.add(forward);
 
-    }
+                /*Clockwise forward action*/
+                Agent clockwiseForward = a.clone();
+                clockwiseForward.turn(Turn.CLOCKWISE);
+                clockwiseForward.moveForward();
+                neighbors.add(clockwiseForward);
 
-    /**
-     * Updating the board and continuing down the recursion
-     * @param x x-coordinate
-     * @param y y-coordinate
-     * @param a the new Agent for the coordinate
-     */
-    private void nextStep(int x, int y, Agent a){
-        scores[y][x] = a.clone(); //New agent is assigned to current coordinates
-        PriorityQueue<Agent> directions = new PriorityQueue<>(); //PQ of the actions the Agent can make, sorted by heuristic
+                /*Clockwise bash action*/
+                Agent clockwiseBash = a.clone();
+                clockwiseBash.turn(Turn.CLOCKWISE);
+                clockwiseBash.bash();
+                neighbors.add(clockwiseBash);
 
-        /* These generate the possible actions the agent can make from the current coordinate */
-        /* Bash action */
-        Agent bash = a.clone();
-        bash.bash();
-        valid(bash, directions); //Makes sure action is a valid move and adds it to the pq if it is
+                /* Counterclockwise forward action*/
+                Agent counterForward = a.clone();
+                counterForward.turn(Turn.COUNTERCLOCKWISE);
+                counterForward.moveForward();
+                neighbors.add(counterForward);
 
-        /* Forward action */
-        Agent forward = a.clone();
-        forward.moveForward();
-        valid(forward, directions); ///Makes sure action is a valid move and adds it to the pq if it is
+                /* Counterclockwise bash action*/
+                Agent counterBash = a.clone();
+                counterBash.turn(Turn.COUNTERCLOCKWISE);
+                counterBash.bash();
+                neighbors.add(counterBash);
 
-        /*Clockwise forward action*/
-        Agent clockwiseForward = a.clone();
-        clockwiseForward.turn(Turn.CLOCKWISE);
-        clockwiseForward.moveForward();
-        valid(clockwiseForward, directions); //Makes sure action is a valid move and adds it to the pq if it is
+                /* Backwards Forward action*/
+                Agent backwardsForward = a.clone();
+                backwardsForward.turn(Turn.COUNTERCLOCKWISE);
+                backwardsForward.turn(Turn.COUNTERCLOCKWISE);
+                backwardsForward.moveForward();
+                neighbors.add(backwardsForward);
 
-        /*Clockwise bash action*/
-        Agent clockwiseBash = a.clone();
-        clockwiseBash.turn(Turn.CLOCKWISE);
-        clockwiseBash.bash();
-        valid(clockwiseBash, directions); //Makes sure action is a valid move and adds it to the pq if it is
+                /* Backwards bash action*/
+                Agent backwardsBash = a.clone();
+                backwardsBash.turn(Turn.COUNTERCLOCKWISE);
+                backwardsBash.turn(Turn.COUNTERCLOCKWISE);
+                backwardsBash.bash();
+                neighbors.add(backwardsBash);
 
-        /* Counterclockwise forward action*/
-        Agent counterForward = a.clone();
-        counterForward.turn(Turn.COUNTERCLOCKWISE);
-        counterForward.moveForward();
-        valid(counterForward, directions); //Makes sure action is a valid move and adds it to the pq if it is
+                for(Agent neighbor: neighbors){ //Checks every possible action
+                    if(!neighbor.outOfBounds()){ //Makes sure action is valid
+                        int newX = neighbor.getCurrLoc().getX();
+                        int newY = neighbor.getCurrLoc().getY();
+                        neighbor.setHeuristic(heuristic(neighbor)); //Sets the heuristic of action
+                        if(scores[newY][newX]==null){ //If position hasn't been reached yet add it
+                                scores[newY][newX] = neighbor;
+                                visited.add(new Coord(newX, newY));
+                                directions.add(neighbor);
 
-        /* Counterclockwise bash action*/
-        Agent counterBash = a.clone();
-        counterBash.turn(Turn.COUNTERCLOCKWISE);
-        counterBash.bash();
-        valid(counterBash, directions); //Makes sure action is a valid move and adds it to the pq if it is
-
-        /* Backwards Forward action*/
-        Agent backwardsForward = a.clone();
-        backwardsForward.turn(Turn.COUNTERCLOCKWISE);
-        backwardsForward.turn(Turn.COUNTERCLOCKWISE);
-        backwardsForward.moveForward();
-        valid(backwardsForward, directions); //Makes sure action is a valid move and adds it to the pq if it is
-
-        /* Backwards bash action*/
-        Agent backwardsBash = a.clone();
-        backwardsBash.turn(Turn.COUNTERCLOCKWISE);
-        backwardsBash.turn(Turn.COUNTERCLOCKWISE);
-        backwardsBash.bash();
-        valid(backwardsBash, directions); //Makes sure action is a valid move and adds it to the pq if it is
-
-        while(directions.size()>0) { //Goes down the PQ one action at a time
-            Agent next = directions.remove();  //Gets the top action of the PQ and continues the recursion with it
-            run(next); //Runs the Agent at the new coordinate
+                        }else if(scores[newY][newX].getScore()<neighbor.getScore()){ //If old method to reach point is worse, replace it
+                            scores[newY][newX]=neighbor;
+                            directions.add(neighbor);
+                        }
+                    }
+                }
+            }
+            runSearch(directions.remove());
         }
     }
 
@@ -123,18 +143,6 @@ public class AStar {
      */
     private int heuristic(Agent a){
         return a.getScore() - h.calculateHeuristic(a.getCurrLoc(), G);
-    }
-
-    /**
-     * Adds agent to priority queue if it is a valid agent
-     * @param a Agent being tested
-     * @param pq Priority Queue to add to
-     */
-    private void valid(Agent a, PriorityQueue<Agent> pq){
-        if(a.outOfBounds()==false){ //Adds counterclockwise bash to PQ if it is a valid action
-            a.setHeuristic(heuristic(a));
-            pq.add(a);
-        }
     }
 
     /**
