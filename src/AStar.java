@@ -13,7 +13,7 @@ public class AStar {
     private int rows, columns;
     private Agent bestGoal;
     public ArrayList<Coord> visited;
-    private  PriorityQueue<Agent> directions = new PriorityQueue<>(); //PQ of the actions the Agent can make, sorted by heuristic
+    private  PriorityQueue<Agent> directions; //PQ of the actions the Agent can make, sorted by heuristic
 
     public AStar(Board b, Heuristic h) throws IOException {
         this.h = h; //Gets the heuristic function
@@ -22,6 +22,7 @@ public class AStar {
         columns = board[0].length; //Number of columns
         scores = new Agent[rows][columns]; //Board that stores Agents and their paths
         visited = new ArrayList<>();
+        directions = new PriorityQueue<>();
         /* Searches the value board for Start and Goal coordinates*/
         for(int y = 0; y < rows; y++){
             for(int x = 0; x < columns; x++) {
