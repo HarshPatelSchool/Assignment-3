@@ -39,7 +39,7 @@ public class Heuristic {
             case 5: //Returns rounded down straight line distance
                 return straightLine;
             case 6: //Returns rounded down straight line distance * 3
-                return 10* straightLine;
+                return 3* straightLine;
             default:
                 return 0;
         }
