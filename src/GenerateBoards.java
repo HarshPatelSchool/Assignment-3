@@ -23,7 +23,7 @@ public class GenerateBoards {
         File boards = new File("src/boards");
         boards.mkdir();
         for(int i = 1; i<=numberOfBoards; i++){ //Creates specified number of boards
-            /* Assigns coordinate values for start and goal*/
+            /* Assigns random coordinate values for start and goal*/
             do{
                 sx=r.nextInt(columns);
                 gx=r.nextInt(columns);
