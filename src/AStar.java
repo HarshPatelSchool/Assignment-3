@@ -3,7 +3,6 @@ package src;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class AStar {
@@ -12,9 +11,15 @@ public class AStar {
     private Heuristic h;
     private int rows, columns;
     private Agent bestGoal;
-    public ArrayList<Coord> visited;
+    private ArrayList<Coord> visited;
     private  PriorityQueue<Agent> directions; //PQ of the actions the Agent can make, sorted by heuristic
 
+    /**
+     *
+     * @param b
+     * @param h
+     * @throws IOException
+     */
     public AStar(Board b, Heuristic h) throws IOException {
         this.h = h; //Gets the heuristic function
         char[][] board = b.getBoard(); //Gets the board values
@@ -23,6 +28,7 @@ public class AStar {
         scores = new Agent[rows][columns]; //Board that stores Agents and their paths
         visited = new ArrayList<>();
         directions = new PriorityQueue<>();
+
         /* Searches the value board for Start and Goal coordinates*/
         for(int y = 0; y < rows; y++){
             for(int x = 0; x < columns; x++) {
@@ -36,17 +42,18 @@ public class AStar {
         directions.add(new Agent(b, S.getX(), S.getY()));
         runSearch();
         this.bestGoal = scores[G.getY()][G.getX()]; //Sets the bestGoal agent as the agent at the Goal coordinate after the algorithm is complete
-        //System.out.println(Arrays.deepToString(scores));
+
+        /* Creates a file that visually shows what was checked. Useful for analysis */
         FileWriter check = new FileWriter("src/boards/check.txt"); //Starts the file writer for a new text file
         for(int y = 0; y < rows; y++){ //Rows
             for(int x = 0; x<columns; x++){ //Columns
-                if (new Coord(x,y).equals(G))
+                if (new Coord(x,y).equals(G)) //Adds Goal
                     check.write("G\t");
-                else if (new Coord(x,y).equals(S))
+                else if (new Coord(x,y).equals(S)) //Adds Start
                     check.write("S\t");
-                else if(visited.contains(new Coord(x,y)))
+                else if(visited.contains(new Coord(x,y)))  //Adds X if visited
                     check.write("X\t");
-                else check.write(".\t");
+                else check.write(".\t"); //Adds . if not visited
             }
             if(y!=rows) check.write("\n"); //Adds newline at the end of the row except the last row
         }
@@ -58,14 +65,14 @@ public class AStar {
      */
     private void runSearch(){
         while (!directions.isEmpty()){ //Continues running while there are actions in the priority queue
-            Agent a = directions.remove();
+            Agent a = directions.remove(); //Gets the value with the best heuristic score in the priority queue
             int y = a.getCurrLoc().getY(); //Gets current Y value to check
             int x = a.getCurrLoc().getX(); //Gets current X value to check
-            ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from it's current position
+            ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from its current position
             if(a.getCurrLoc().equals(G)) { //Checks if goal has been reached
                 scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes()); //+100 to score for reaching Goal
                 directions.clear(); //Goal has been reached so algorithm can stop by clearing the PQ
-                break;
+                break; //Stops loop
             }else{
                 /*These actions represent the places the agent can get to from the current coordinates*/
                 /* Backwards action */
@@ -125,7 +132,6 @@ public class AStar {
                             scores[newY][newX] = neighbor;
                             visited.add(new Coord(newX, newY));
                             directions.add(neighbor);
-
                         }else if(scores[newY][newX].getScore()<neighbor.getScore()){ //If old method to reach point is worse, replace it
                             scores[newY][newX]=neighbor;
                             directions.add(neighbor);
@@ -153,4 +159,11 @@ public class AStar {
         return bestGoal;
     }
 
+    /**
+     * Gets list of nodes visited
+     * @return Arraylist of coordinates visited
+     */
+    public ArrayList<Coord> getVisited() {
+        return visited;
+    }
 }
