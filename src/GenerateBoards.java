@@ -1,5 +1,6 @@
 package src;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -19,7 +20,8 @@ public class GenerateBoards {
         Random r = new Random(); //Used to generate random integers
         int nextInt; //used to store the random integers of the terrain complexity
         int sx,gx,sy,gy; //used to store the coordinates of
-
+        File boards = new File("src/boards");
+        boards.mkdir();
         for(int i = 1; i<=numberOfBoards; i++){ //Creates specified number of boards
             /* Assigns coordinate values for start and goal*/
             do{
