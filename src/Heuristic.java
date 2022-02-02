@@ -37,7 +37,7 @@ public class Heuristic {
                 return vertical + horizontal;
             case 5: //Returns rounded down straight line distance
                 result = vertical + horizontal;
-                /* since a turn always costs at least a time of 1 since it rounds up, if the vertical and horizontal
+                /* Since a turn always costs at least a time of 1 since it rounds up, if the vertical and horizontal
                 distance are both positive, it must have at least one turn, so the heuristic can be the manhattan score + 1,
                 otherwise it is just a straight line from S to G so it is just manhattan distance.
                  */
