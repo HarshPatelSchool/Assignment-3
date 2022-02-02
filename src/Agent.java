@@ -165,7 +165,7 @@ public class Agent implements Comparable<Agent> {
     /**
      * Demolish the surrounding terrain
      */
-    public void demolish(){ //TODO
+    public void demolish(){ //TODO extra credit
         int x = currLoc.getX();
         int y = currLoc.getY();
 
@@ -190,10 +190,7 @@ public class Agent implements Comparable<Agent> {
         return currLoc;
     }
 
-    /**
-     *
-     * @return
-     */
+
     public Direction getCurrDir() {
         return currDir;
     }
@@ -205,6 +202,7 @@ public class Agent implements Comparable<Agent> {
     public ArrayList<String> getPath() {
         return path;
     }
+
 
     public int getNodes() {
         return nodes;
@@ -224,7 +222,7 @@ public class Agent implements Comparable<Agent> {
     /**
      * Compares the heuristic values of two agents
      * @param o second agent to compare to.
-     * @return
+     * @return Difference from object 2 to object 1
      */
     @Override
     public int compareTo(Agent o) {
