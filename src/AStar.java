@@ -20,7 +20,7 @@ public class AStar {
      * @param h Heuristic method
      * @throws IOException
      */
-    public AStar(Board b, Heuristic h) throws IOException {
+    public AStar(Board b, Heuristic h) throws IOException, CloneNotSupportedException {
         this.h = h; //Gets the heuristic function
         char[][] board = b.getBoard(); //Gets the board values
         rows = board.length; //Number of rows
@@ -38,8 +38,9 @@ public class AStar {
                     S = new Coord(x, y); //Start coordinate
             }
         }
-
-        directions.add(new Agent(b, S.getX(), S.getY()));
+        Agent a = new Agent(b, S.getX(), S.getY());
+        a.getAgentPath().add(a);
+        directions.add(a);
         runSearch();
         this.bestGoal = scores[G.getY()][G.getX()]; //Sets the bestGoal agent as the agent at the Goal coordinate after the algorithm is complete
 
@@ -64,60 +65,60 @@ public class AStar {
      * Runs the search algorithm
      * Based off of the pseudocode from https://www.redblobgames.com/pathfinding/a-star/introduction.html#astar
      */
-    private void runSearch(){
+    private void runSearch() throws CloneNotSupportedException {
         while (!directions.isEmpty()){ //Continues running while there are actions in the priority queue
             Agent a = directions.remove(); //Gets the value with the best heuristic score in the priority queue
             int y = a.getCurrLoc().getY(); //Gets current Y value to check
             int x = a.getCurrLoc().getX(); //Gets current X value to check
             ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from its current position
             if(a.getCurrLoc().equals(G)) { //Checks if goal has been reached
-                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes()); //+100 to score for reaching Goal
+                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes(), a.getAgentPath()); //+100 to score for reaching Goal
                 break; //Stops loop
             }else{
                 /*These actions represent the places the agent can get to from the current coordinates*/
                 /* Backwards action */
-                Agent bash = a.clone();
+                Agent bash = (Agent) a.clone();
                 bash.bash();
                 neighbors.add(bash);
 
                 /* Forward action */
-                Agent forward = a.clone();
+                Agent forward = (Agent) a.clone();
                 forward.moveForward();
                 neighbors.add(forward);
 
                 /*Clockwise forward action*/
-                Agent clockwiseForward = a.clone();
+                Agent clockwiseForward = (Agent) a.clone();
                 clockwiseForward.turn(Turn.CLOCKWISE);
                 clockwiseForward.moveForward();
                 neighbors.add(clockwiseForward);
 
                 /*Clockwise bash action*/
-                Agent clockwiseBash = a.clone();
+                Agent clockwiseBash = (Agent) a.clone();
                 clockwiseBash.turn(Turn.CLOCKWISE);
                 clockwiseBash.bash();
                 neighbors.add(clockwiseBash);
 
                 /* Counterclockwise forward action*/
-                Agent counterForward = a.clone();
+                Agent counterForward = (Agent) a.clone();
                 counterForward.turn(Turn.COUNTERCLOCKWISE);
                 counterForward.moveForward();
                 neighbors.add(counterForward);
 
                 /* Counterclockwise bash action*/
-                Agent counterBash = a.clone();
+                Agent counterBash = (Agent) a.clone();
                 counterBash.turn(Turn.COUNTERCLOCKWISE);
                 counterBash.bash();
                 neighbors.add(counterBash);
 
                 /* Backwards Forward action*/
-                Agent backwardsForward = a.clone();
+                Agent backwardsForward = (Agent) a.clone();
                 backwardsForward.turn(Turn.COUNTERCLOCKWISE);
                 backwardsForward.turn(Turn.COUNTERCLOCKWISE);
                 backwardsForward.moveForward();
                 neighbors.add(backwardsForward);
 
                 /* Backwards bash action*/
-                Agent backwardsBash = a.clone();
+                Agent backwardsBash = (Agent) a.clone();
                 backwardsBash.turn(Turn.COUNTERCLOCKWISE);
                 backwardsBash.turn(Turn.COUNTERCLOCKWISE);
                 backwardsBash.bash();
@@ -148,7 +149,7 @@ public class AStar {
      * @return Heuristic value
      */
     private int heuristic(Agent a){
-        return a.getScore() - h.calculateHeuristic(a.getCurrLoc(), G);
+        return a.getScore() - h.calculateHeuristic(a, G);
     }
 
     /**

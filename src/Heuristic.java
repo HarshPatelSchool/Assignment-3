@@ -20,7 +20,8 @@ public class Heuristic {
      * @param g coordinates of goal
      * @return calculated heuristic value at the current node
      */
-    public int calculateHeuristic(Coord a, Coord g){
+    public int calculateHeuristic(Agent agent, Coord g){
+        Coord a = agent.getCurrLoc();
         int ay = a.getY(), ax = a.getX(), gy=g.getY(), gx=g.getX();
         int vertical = Math.abs(ay-gy); //Vertical distance between agent and goal
         int horizontal = Math.abs(ax-gx); //Horizontal distance between agent and goal
