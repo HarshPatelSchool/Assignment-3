@@ -38,8 +38,8 @@ public class Game {
         sb.append("Score to Goal");
         sb.append('\n');
         long startTime = System.currentTimeMillis();
-        while(System.currentTimeMillis()-startTime<1000){ //7200000ms = 2hr
-            GenerateBoards.generateBoards(1,10,10); //Comment this line out to stop generating new random boards
+        while(System.currentTimeMillis()-startTime<7200000){ //7200000ms = 2hr
+            GenerateBoards.generateBoards(1,500,500); //Comment this line out to stop generating new random boards
             Heuristic heuristic = new Heuristic(heuristicChoice); //Generates the heuristic method based on user choice
             Board board = new Board(boardTxt); //Generates board from user's file
             runSimulation(board, heuristic, sb);
