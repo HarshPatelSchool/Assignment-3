@@ -31,6 +31,10 @@ public class Game {
         sb.append(',');
         sb.append("Minimum Surrounding Cost");
         sb.append(',');
+        sb.append("Average Cost in Direction of Goal");
+        sb.append(',');
+        sb.append("Min Turns to Goal");
+        sb.append(',');
         sb.append("Score to Goal");
         sb.append('\n');
         long startTime = System.currentTimeMillis();
