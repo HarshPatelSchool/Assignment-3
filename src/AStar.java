@@ -72,7 +72,7 @@ public class AStar {
             int x = a.getCurrLoc().getX(); //Gets current X value to check
             ArrayList<Agent> neighbors = new ArrayList<>(); //"neighbors" in this case are spots the agent can reach from its current position
             if(a.getCurrLoc().equals(G)) { //Checks if goal has been reached
-                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes(), a.getAgentPath()); //+100 to score for reaching Goal
+                scores[y][x] = new Agent(a.board, x, y, a.getCurrDir(), a.getScore() + 100, a.getPath(), a.getNodes(), a.getAgentPath(), a.getRotations()); //+100 to score for reaching Goal
                 break; //Stops loop
             }else{
                 /*These actions represent the places the agent can get to from the current coordinates*/
