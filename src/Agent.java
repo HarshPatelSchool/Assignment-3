@@ -15,6 +15,7 @@ public class Agent implements Comparable<Agent> {
     private ArrayList<String> path;
     private ArrayList<Agent> agentPath;
     private int nodes;
+    private int rotations;
 
     /**
      * Creates a new agent at a coordinate
@@ -32,6 +33,7 @@ public class Agent implements Comparable<Agent> {
         path.add("Start");
         nodes=0;
         agentPath = new ArrayList<>();
+        rotations = 0;
     }
 
     /**
@@ -44,7 +46,7 @@ public class Agent implements Comparable<Agent> {
      * @param path Path is has traveled
      * @param nodes Number of nodes visited
      */
-    public Agent(Board b, int x, int y, Direction dir, int score, ArrayList<String> path, int nodes, ArrayList<Agent> agentPath) {
+    public Agent(Board b, int x, int y, Direction dir, int score, ArrayList<String> path, int nodes, ArrayList<Agent> agentPath, int rotations) {
         board = b;
         currLoc = new Coord(x, y);
         currDir =dir;
@@ -53,6 +55,7 @@ public class Agent implements Comparable<Agent> {
         this.path=(ArrayList<String>) path.clone();
         this.nodes=nodes;
         this.agentPath= (ArrayList<Agent>) agentPath.clone();
+        this.rotations=rotations;
     }
 
     /**
@@ -60,7 +63,7 @@ public class Agent implements Comparable<Agent> {
      * @return an Agent with the exact same properties as the current Agent
      */
     public Agent clone(){
-        return new Agent(board, currLoc.getX(), currLoc.getY(), currDir, score, path, nodes, agentPath);
+        return new Agent(board, currLoc.getX(), currLoc.getY(), currDir, score, path, nodes, agentPath, rotations);
     }
 
     /**
@@ -136,6 +139,7 @@ public class Agent implements Comparable<Agent> {
             path.add("Turn Counterclockwise");
         }
         score -= (int)Math.ceil(currLocVal / 2.0);
+        rotations++;
         agentPath.add(clone());
     }
 
@@ -182,11 +186,26 @@ public class Agent implements Comparable<Agent> {
                   continue;
               else if (i <0 || j <0 || j>=board.getBoard().length || i>=board.getBoard()[0].length)
                   continue;
-              else board.getBoard()[y][x]=3;
-
+              else board.getBoard()[j][i]=3;
           }
         }
         score-=4;
+    }
+
+    public ArrayList<Integer> surroundingValues(){
+        int x = currLoc.getX();
+        int y = currLoc.getY();
+        ArrayList<Integer> vals = new ArrayList<>();
+        for(int i =x-1; i<=x+1; i++){
+            for(int j = y-1;j <=y+1; j++){
+                if(i==x && j ==y) //Doesn't get current value, only surrounding
+                    continue;
+                else if (i <0 || j <0 || j>=board.getBoard().length || i>=board.getBoard()[0].length) //Makes sure coordinate is in board
+                    continue;
+                else vals.add(board.getVal(new Coord(i,j)));
+            }
+        }
+        return vals;
     }
 
     /**
@@ -458,4 +477,9 @@ public class Agent implements Comparable<Agent> {
     public ArrayList<Agent> getAgentPath() {
         return agentPath;
     }
+
+    public int getRotations() {
+        return rotations;
+    }
+
 }
