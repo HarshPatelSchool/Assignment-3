@@ -53,6 +53,24 @@ public class Board {
     }
 
     /**
+     * gets value from x and y
+     * @param x,y coordinates
+     * @return integer value at coordinate
+     */
+    public int getValFromXY(int x, int y) {
+        try {
+            char val = board[y][x]; //Gets val at coordinate. Array is in form row, column.
+            if (val == 'G' || val == 'S')
+                return 1; //Given in the problem these states have a terrain complexity of 1
+            else
+                return Integer.parseInt(String.valueOf(val)); //Returns the int value at the coordinate
+        }
+        catch (Exception e){
+            return 0;
+        }
+    }
+
+    /**
      * Returns the board
      * @return char[][] that contains the terrain complexity of the board
      */

@@ -39,6 +39,10 @@ public class Game {
             sb.append(goal.getCurrLoc().getY()-agentPath.get(i).getCurrLoc().getY());
             sb.append(',');
             sb.append(agentPath.get(i).getScore()-cost);
+            sb.append(',');
+            sb.append(agentPath.get(i).getAverageInDirection(goal.getCurrLoc()));
+            sb.append(',');
+            sb.append(agentPath.get(i).getMinNumTurnsToGoal(goal.getCurrLoc()));
             sb.append('\n');
         }
         csv.write(sb.toString());

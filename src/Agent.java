@@ -1,6 +1,7 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Agent stores and defines the movement and coordinates that can be made on the board
@@ -251,6 +252,200 @@ public class Agent implements Comparable<Agent> {
     public int getHeuristic() {
         return heuristic;
     }
+
+    /**
+     * gets the directions to the goal
+     * @return direction to the goal
+     */
+    public ArrayList<Direction> getDirectionToGoal(Coord G){
+        ArrayList<Direction> directionsToGoal = new ArrayList<>();
+        if(this.currLoc.getX() - G.getX() == 0){
+        }
+        else{
+            directionsToGoal.add(this.currLoc.getX() - G.getX() > 0 ? Direction.LEFT : Direction.RIGHT);
+        }
+        if(this.currLoc.getY() - G.getY() == 0){
+        }
+        else{
+            directionsToGoal.add(this.currLoc.getY() - G.getY() > 0 ? Direction.UP : Direction.DOWN);
+        }
+        return directionsToGoal;
+    }
+
+    public int getAverageInDirection(Coord G){
+        if(G.equals(this.currLoc)){
+            return 0;
+        }
+        int averageInDirection = 0;
+        ArrayList<Direction> directions = getDirectionToGoal(G);
+
+        if(directions.size()>1){
+            averageInDirection = getDiagonalAverage(directions.get(0), directions.get(1));
+        }
+        else{
+            averageInDirection = getStraightAverage(directions.get(0));
+        }
+
+        return averageInDirection;
+    }
+
+    /**
+     * returns the diagonal values average
+     * @param G goal
+     * @param direction1 first direction to goal
+     * @param direction2 second direction to goal
+     * @return diagonal average
+     */
+    public int getDiagonalAverage(Direction direction1, Direction direction2){
+        int diagonalAverage = 0;
+        switch (direction1){
+            case LEFT -> {
+                if(direction2.equals(Direction.UP)){
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()-1, currLoc.getY());
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX(), currLoc.getY()-1);
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()-1, currLoc.getY()-1);
+                }
+                else{
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()-1, currLoc.getY());
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()-1, currLoc.getY())+1;
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX(), currLoc.getY()+1);
+                }
+            }
+            case RIGHT -> {
+                if(direction2.equals(Direction.UP)){
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()+1, currLoc.getY());
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()+1, currLoc.getY()-1);
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX(), currLoc.getY()-1);
+                }
+                else{
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()+1, currLoc.getY());
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX()+1, currLoc.getY())+1;
+                    diagonalAverage = diagonalAverage + board.getValFromXY(currLoc.getX(), currLoc.getY()+1);
+                }
+            }
+        }
+        return diagonalAverage / 3;
+    }
+
+    public int getStraightAverage(Direction direction){
+        ArrayList<Integer> numbers = new ArrayList<>();
+        int straightAverage = 0;
+        int numberOfNeighbors = 0;
+        switch (direction){
+            case UP -> {
+                numbers.add(board.getValFromXY(currLoc.getX()-1, currLoc.getY()-1));
+                numbers.add(board.getValFromXY(currLoc.getX(), currLoc.getY()-1));
+                numbers.add(board.getValFromXY(currLoc.getX()+1, currLoc.getY()-1));
+                break;
+            }
+            case DOWN -> {
+                numbers.add(board.getValFromXY(currLoc.getX()-1, currLoc.getY()+1));
+                numbers.add(board.getValFromXY(currLoc.getX(), currLoc.getY()+1));
+                numbers.add(board.getValFromXY(currLoc.getX()+1, currLoc.getY()+1));
+                break;
+            }
+            case LEFT -> {
+                numbers.add(board.getValFromXY(currLoc.getX()-1, currLoc.getY()-1));
+                numbers.add(board.getValFromXY(currLoc.getX()-1, currLoc.getY()));
+                numbers.add(board.getValFromXY(currLoc.getX()-1, currLoc.getY()+1));
+                break;
+            }
+            case RIGHT -> {
+                numbers.add(board.getValFromXY(currLoc.getX()+1, currLoc.getY()-1));
+                numbers.add(board.getValFromXY(currLoc.getX()+1, currLoc.getY()));
+                numbers.add(board.getValFromXY(currLoc.getX()+1, currLoc.getY()+1));
+                break;
+            }
+        }
+        for (int i : numbers){
+            if(i != 0){
+                straightAverage = straightAverage + i;
+                numberOfNeighbors++;
+            }
+        }
+        return straightAverage/numberOfNeighbors;
+    }
+
+    /**
+     * gets the minimum number of turns to the goal
+     * @return
+     */
+    public int getMinNumTurnsToGoal(Coord G){
+        if(G.equals(this.currLoc)){
+            return 0;
+        }
+        int turns = 0;
+        ArrayList<Direction> directions = getDirectionToGoal(G);
+
+        if(directions.size()>1){
+            turns = notFacingRightWayDiagonal(directions.get(0), directions.get(1)) + 2;
+        }
+        else{
+            turns = notFacingRightWayStraight(directions.get(0));
+        }
+
+        return turns;
+    }
+
+    public int notFacingRightWayStraight(Direction direction){
+        return checkDirections(direction, direction == Direction.LEFT, direction == Direction.RIGHT);
+    }
+
+    public int notFacingRightWayDiagonal(Direction direction1, Direction direction2) {
+        return checkDirections(direction2, direction1 == Direction.LEFT, direction1 == Direction.RIGHT);
+    }
+
+
+    private int checkDirections(Direction direction, boolean b, boolean b2) {
+        switch (this.currDir){
+            case UP -> {
+                if(direction == Direction.UP){
+                    return 0;
+                }
+                else if (direction == Direction.DOWN){
+                    return 2;
+                }
+                else{
+                    return 1;
+                }
+            }
+            case DOWN -> {
+                if(direction == Direction.DOWN){
+                    return 0;
+                }
+                else if (direction == Direction.UP){
+                    return 2;
+                }
+                else{
+                    return 1;
+                }
+            }
+            case LEFT -> {
+                if(b){
+                    return 0;
+                }
+                else if (b2){
+                    return 2;
+                }
+                else{
+                    return 1;
+                }
+            }
+            case RIGHT -> {
+                if(b2){
+                    return 0;
+                }
+                else if (b){
+                    return 2;
+                }
+                else{
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
 
     /**
      * Sets heuristic of agent
