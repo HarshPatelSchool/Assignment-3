@@ -73,12 +73,11 @@ public class Game {
             sb.append(',');
             sb.append(neighborVals.get(0));
             sb.append(',');
-            sb.append(a.getScore()-cost);
-            sb.append(agentPath.get(i).getScore()-cost);
-            sb.append(',');
             sb.append(agentPath.get(i).getAverageInDirection(goal.getCurrLoc()));
             sb.append(',');
             sb.append(agentPath.get(i).getMinNumTurnsToGoal(goal.getCurrLoc()));
+            sb.append(',');
+            sb.append(a.getScore()-cost);
             sb.append('\n');
         }
         /*
