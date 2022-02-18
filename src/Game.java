@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.lang.Math;
 
 /**
  * Runs the A* search on a Board
@@ -20,6 +21,10 @@ public class Game {
         sb.append("X Distance");
         sb.append(',');
         sb.append("Y Distance");
+        sb.append(',');
+        sb.append("Manhattan Distance");
+        sb.append(',');
+        sb.append("Straight Line Distance");
         sb.append(',');
         sb.append("Rotations Taken");
         sb.append(',');
@@ -55,6 +60,10 @@ public class Game {
             sb.append(goal.getCurrLoc().getX()-a.getCurrLoc().getX());
             sb.append(',');
             sb.append(goal.getCurrLoc().getY()-a.getCurrLoc().getY());
+            sb.append(',');
+            sb.append((goal.getCurrLoc().getY()-a.getCurrLoc().getY()) + (goal.getCurrLoc().getX()-a.getCurrLoc().getX()));  //manhattan
+            sb.append(',');
+            sb.append(Math.sqrt((Math.pow(goal.getCurrLoc().getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getCurrLoc().getX()-a.getCurrLoc().getX(),2))));  //manhattan
             sb.append(',');
             sb.append(a.getRotations());
             sb.append(',');
