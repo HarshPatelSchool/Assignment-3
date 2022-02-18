@@ -1,7 +1,6 @@
 package src;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ public class Game {
         sb.append(',');
         sb.append("Average Surrounding Cost");
         sb.append(',');
+        sb.append("Minimum Surrounding Cost");
+        sb.append(',');
         sb.append("Score to Goal");
         sb.append('\n');
         long startTime = System.currentTimeMillis();
@@ -53,6 +54,7 @@ public class Game {
             int total = 0;
             Agent a = agentPath.get(i);
             ArrayList<Integer> neighborVals = a.surroundingValues();
+            neighborVals.sort(Integer::compareTo);
             for(int j: neighborVals)
                 total+=j;
             sb.append(path.get(i));
@@ -61,13 +63,15 @@ public class Game {
             sb.append(',');
             sb.append(goal.getCurrLoc().getY()-a.getCurrLoc().getY());
             sb.append(',');
-            sb.append((goal.getCurrLoc().getY()-a.getCurrLoc().getY()) + (goal.getCurrLoc().getX()-a.getCurrLoc().getX()));  //manhattan
+            sb.append((goal.getCurrLoc().getY()-a.getCurrLoc().getY()) + (goal.getCurrLoc().getX()-a.getCurrLoc().getX()));  //Manhattan
             sb.append(',');
-            sb.append(Math.sqrt((Math.pow(goal.getCurrLoc().getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getCurrLoc().getX()-a.getCurrLoc().getX(),2))));  //manhattan
+            sb.append(Math.sqrt((Math.pow(goal.getCurrLoc().getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getCurrLoc().getX()-a.getCurrLoc().getX(),2))));  //Straight Line
             sb.append(',');
             sb.append(a.getRotations());
             sb.append(',');
-            sb.append(total);
+            sb.append(total/agentPath.size());
+            sb.append(',');
+            sb.append(neighborVals.get(0));
             sb.append(',');
             sb.append(a.getScore()-cost);
             sb.append('\n');
@@ -78,6 +82,5 @@ public class Game {
         System.out.println("Nodes Visited for Optimal Path = "+goal.getNodes());
         System.out.println("Nodes Expanded to find Optimal Path= "+search.getVisited().size());
          */
-
     }
 }
