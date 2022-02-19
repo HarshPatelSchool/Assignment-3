@@ -81,6 +81,7 @@ public class Heuristic {
         count +=-5.3476*total/neighborVals.size();
         count +=0.0857*neighborVals.get(0);
         count+=0.2175*a.getAverageInDirection(goal);
+        count +=2.1467;
         return Math.round(count);
     }
 }
