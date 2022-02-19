@@ -1,5 +1,7 @@
 package src;
 
+import java.util.ArrayList;
+
 /**
  * Creates the heuristic values
  */
@@ -50,8 +52,35 @@ public class Heuristic {
                 if(vertical !=0 && horizontal!=0)
                     result++;
                 return 3* result;
+            case 7:
+                return newHeuristic(agent, g);
             default:
                 return 0;
         }
+    }
+
+    private int newHeuristic(Agent a, Coord goal){
+        float count = 0;
+        int total = 0;
+        ArrayList<Integer> neighborVals = a.surroundingValues();
+        neighborVals.sort(Integer::compareTo);
+        for(int j: neighborVals)
+            total+=j;
+        String action = a.getPath().get(a.getPath().size()-1);
+        /*
+        switch (action){
+            case "Move Forward": case "Turn Clockwise": case
+        }
+
+         */
+        count += 0.8547*Math.abs(goal.getX()-a.getCurrLoc().getX());
+        count += 0.8467*Math.abs(goal.getY()-a.getCurrLoc().getY());
+        count +=0.6826*((goal.getY()-a.getCurrLoc().getY()) + (goal.getX()-a.getCurrLoc().getX()));
+        count +=1.3688*(Math.sqrt((Math.pow(goal.getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getX()-a.getCurrLoc().getX(),2))));
+        count +=-0.0273* a.getRotations();
+        count +=-5.3476*total/neighborVals.size();
+        count +=0.0857*neighborVals.get(0);
+        count+=0.2175*a.getAverageInDirection(goal);
+        return Math.round(count);
     }
 }
