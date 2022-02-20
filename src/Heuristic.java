@@ -73,15 +73,17 @@ public class Heuristic {
         }
 
          */
-        count += 0.8547*Math.abs(goal.getX()-a.getCurrLoc().getX());
-        count += 0.8467*Math.abs(goal.getY()-a.getCurrLoc().getY());
-        count +=0.6826*(Math.abs(goal.getY()-a.getCurrLoc().getY()) + Math.abs(goal.getX()-a.getCurrLoc().getX()));
-        count +=1.3688*(Math.sqrt((Math.pow(goal.getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getX()-a.getCurrLoc().getX(),2))));
-        count +=-0.0273* a.getRotations();
-        count +=-5.3476*total/neighborVals.size();
-        count +=0.0857*neighborVals.get(0);
-        count+=0.2175*a.getAverageInDirection(goal);
-        count +=2.1467;
+
+
+        count += 0.8538*Math.abs(goal.getX()-a.getCurrLoc().getX());
+        count += 0.8458*Math.abs(goal.getY()-a.getCurrLoc().getY());
+        count += 0.6834*(Math.abs((goal.getY()-a.getCurrLoc().getY())) + Math.abs(goal.getX()-a.getCurrLoc().getX()));
+        count += 1.3691*(Math.sqrt((Math.pow(goal.getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getX()-a.getCurrLoc().getX(),2))));
+        count += -0.028* a.getRotations();
+        count += -5.2955*total/neighborVals.size();
+        count += 0.1089*neighborVals.get(0);
+        count+= 0.2297*a.getAverageInDirection(goal);
+        count +=2.2329;
         return Math.round(count);
     }
 }
