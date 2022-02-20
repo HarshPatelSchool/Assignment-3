@@ -12,7 +12,9 @@ public class Analysis {
         sb.append(" ");
         sb.append(',');
         for(int i = 1; i<=boardNum; i++) {
-            sb.append(i);
+            sb.append(i+" Nodes");
+            sb.append(',');
+            sb.append(i +" Score");
             if(i!=boardNum) sb.append(',');
             else sb.append('\n');
         }
@@ -37,5 +39,7 @@ public class Analysis {
     private static void runSimulation(Board board, Heuristic heuristic, StringBuffer sb) throws IOException, CloneNotSupportedException {
         AStar search = new AStar(board, heuristic); //Searches through the board using the user-specified heuristic method
             sb.append(search.getVisited().size());
+            sb.append(',');
+            sb.append(search.getBestGoal().getScore());
     }
 }
