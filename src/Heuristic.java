@@ -75,7 +75,7 @@ public class Heuristic {
          */
         count += 0.8547*Math.abs(goal.getX()-a.getCurrLoc().getX());
         count += 0.8467*Math.abs(goal.getY()-a.getCurrLoc().getY());
-        count +=0.6826*((goal.getY()-a.getCurrLoc().getY()) + (goal.getX()-a.getCurrLoc().getX()));
+        count +=0.6826*(Math.abs(goal.getY()-a.getCurrLoc().getY()) + Math.abs(goal.getX()-a.getCurrLoc().getX()));
         count +=1.3688*(Math.sqrt((Math.pow(goal.getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getX()-a.getCurrLoc().getX(),2))));
         count +=-0.0273* a.getRotations();
         count +=-5.3476*total/neighborVals.size();

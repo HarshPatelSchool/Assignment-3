@@ -39,7 +39,7 @@ public class Game {
         sb.append('\n');
         long startTime = System.currentTimeMillis();
         while(System.currentTimeMillis()-startTime<7200000){ //7200000ms = 2hr
-            GenerateBoards.generateBoards(1,500,500); //Comment this line out to stop generating new random boards
+            //GenerateBoards.generateBoards(1,500,500); //Comment this line out to stop generating new random boards
             Heuristic heuristic = new Heuristic(heuristicChoice); //Generates the heuristic method based on user choice
             Board board = new Board(boardTxt); //Generates board from user's file
             runSimulation(board, heuristic, sb);
@@ -67,7 +67,7 @@ public class Game {
             sb.append(',');
             sb.append(Math.abs(goal.getCurrLoc().getY()-a.getCurrLoc().getY()));
             sb.append(',');
-            sb.append((goal.getCurrLoc().getY()-a.getCurrLoc().getY()) + (goal.getCurrLoc().getX()-a.getCurrLoc().getX()));  //Manhattan
+            sb.append(Math.abs(goal.getCurrLoc().getY()-a.getCurrLoc().getY()) + Math.abs(goal.getCurrLoc().getX()-a.getCurrLoc().getX()));  //Manhattan
             sb.append(',');
             sb.append(Math.sqrt((Math.pow(goal.getCurrLoc().getY()-a.getCurrLoc().getY(), 2) + Math.pow(goal.getCurrLoc().getX()-a.getCurrLoc().getX(),2))));  //Straight Line
             sb.append(',');
